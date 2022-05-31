@@ -1,10 +1,17 @@
 import { useEffect, useState } from 'react';
+import { ProdutoDto } from '../dto/ProdutoDto';
 
 
 export default function Home() {
 
 
     const [valorTotal, setValorTotal] = useState(0);
+    const [listaPedidos, setListaPedidos] = useState([]);
+
+    function adicionarProduto(valor: number, idProduto:number){
+        //ao receber o id do produto => fazer uma busca com axios e colocá-lo numa lista do tipo produto
+        setValorTotal(valorTotal+valor);
+    }
 
 
     return (
@@ -20,7 +27,7 @@ export default function Home() {
                     <li className="bg-dark listagem-produtos list-group-item">
                         <p>Notebook</p>
                         <p>R$ 1200.00</p>
-                        <button onClick={() => setValorTotal(valorTotal + 1200.00)} className="btn btn-success">Adicionar</button>
+                        <button onClick={() => adicionarProduto(1200.00, ProdutoDto)} className="btn btn-success">Adicionar</button>
                     </li>
                     <li className="bg-dark listagem-produtos list-group-item">
                         <p>Notebook</p>
