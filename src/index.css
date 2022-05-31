@@ -11,3 +11,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.titulo-page{
+  color: white;
+  font-weight: bold;
+}
+
+.listagem-produtos{
+  margin-top: 2%;
+  padding: 2%;
+  list-style: none;
+  
+}
+
+
+.listagem-produtos p{
+  color: aliceblue;
+  font-weight: bold;
+  
+}
