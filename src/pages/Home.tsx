@@ -1,18 +1,68 @@
 import { useEffect, useState } from 'react';
 import { ProdutoDto } from '../dto/ProdutoDto';
+import axios from 'axios';
+import { BASE_URL_PEDIDOS } from '../utils/requests_pedidos';
+import Pagination from '../components/Pagination';
+import { ProdutoType } from '../types/ProdutoType';
+import ProdutoCard from '../components/Produto/ProdutoCard';
+import { ProdutosPedidoType } from '../types/ProdutosPedidoType';
 
 
 export default function Home() {
 
 
     const [valorTotal, setValorTotal] = useState(0);
-    const [listaPedidos, setListaPedidos] = useState([]);
 
-    function adicionarProduto(valor: number, idProduto:number){
-        //ao receber o id do produto => fazer uma busca com axios e colocá-lo numa lista do tipo produto
-        setValorTotal(valorTotal+valor);
+    const [produtosPedido, setProdutosPedido] = useState<ProdutosPedidoType>({
+        data: []
+    });
+
+    const [pageNumber, setPageNumber] = useState(0);
+
+    const [page, setPage] = useState<ProdutoType>({
+        data: [],
+        last: true,
+        totalPages: 0,
+        totalRegistros: 0,
+        size: 12,
+        number: 0,
+        first: true,
+        numberOfElements: 0,
+        empty: true
+    })
+
+    useEffect(() => {
+        axios.get(`http://localhost:8050/produtos/buscar-produtos?size=5&page=${pageNumber}`)
+            .then(response => {
+                console.log(response)
+
+                console.log(page.data)
+                const data = response as any;
+                setPage(data);
+            });
+    }, [pageNumber]);
+
+
+
+
+    const handlePageChange = (newPageNumber: number) => {
+        setPageNumber(newPageNumber);
     }
+    const [produtoId, setProdutoId] = useState<number>();
 
+
+    function adicionaProduto(valor: number, produtoId: number) {
+        console.log(valorTotal);
+        setValorTotal(valorTotal + valor);
+        setProdutoId(produtoId);
+    }
+    useEffect(() => {
+        axios.get(`http://localhost:8050/produtos/${produtoId}`)
+            .then(response => {
+                console.log(response.data);
+                setProdutosPedido(response);
+            });
+    }, [produtoId])
 
     return (
 
@@ -24,28 +74,16 @@ export default function Home() {
                 <input type="search" name="search_produto" id="search_produto" className="align-self-center" />
 
                 <ul className="list-group">
-                    <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1200.00</p>
-                        <button onClick={() => adicionarProduto(1200.00, ProdutoDto)} className="btn btn-success">Adicionar</button>
-                    </li>
-                    <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1300.00</p>
-                        <button onClick={() => setValorTotal(valorTotal + 1300.00)} className="btn btn-success">Adicionar</button>
-                    </li>
-                    <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 2200.00</p>
-                        <button onClick={() => setValorTotal(valorTotal + 2200.00)} className="btn btn-success">Adicionar</button>
-                    </li>
+                    {page.data.map(produto => (
 
-                    
-                    
-                    
-                   
+                        <div key={produto.codigoProduto}>
+                            <ProdutoCard produto={produto} adicionaProduto={adicionaProduto} valorTotal={valorTotal} />
+                        </div>
+
+                    ))}
 
                 </ul>
+                <Pagination page={page} onChange={handlePageChange} />
             </div>
 
             <div className="col-6 border">
@@ -53,31 +91,19 @@ export default function Home() {
                 <h5 className="titulo-page text-center">Valor do pedido: {valorTotal}</h5>
                 <button className="btn btn-success">Finalizar Pedido</button>
                 <ul className="list-group">
-                <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1200.00</p>
-                        <button className="btn btn-danger">Adicionar</button>
-                    </li>
-                    <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1200.00</p>
-                        <button className="btn btn-danger">Adicionar</button>
-                    </li>
 
-                    <li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1200.00</p>
-                        <button className="btn btn-danger">Adicionar</button>
-                    </li>
+                   {/* /*
+                   <!-- IMPLEMENTAR ALGUMA COISA NA API - ASSIM N DA CERTO -->
 
-<li className="bg-dark listagem-produtos list-group-item">
-                        <p>Notebook</p>
-                        <p>R$ 1200.00</p>
-                        <button className="btn btn-danger">Adicionar</button>
-                    </li>
+                    { {produtosPedido.data.map(produtoPedido => (
+                        <li key={produtoPedido.codigoProduto} className="bg-dark listagem-produtos list-group-item">
+                            <p>{produtoPedido.nomeProduto}</p>
+                            <p>R$ {produtoPedido.preco}</p>
+                            <button className="btn btn-danger">Remover</button>
+                        </li>
 
-                    
-                   
+                    ))} */} 
+
 
                 </ul>
             </div>

@@ -1,6 +1,5 @@
 import { RandomUUIDOptions } from "crypto"
 import { NumericLiteral } from "typescript";
-import { v4 as uuid } from 'uuid';
 
 
 export type PedidoDto = {
